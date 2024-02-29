@@ -95,11 +95,11 @@ Function Get-Admins{
   #>
   process{
     $admins = Get-MgDirectoryRole | Select-Object DisplayName, Id | 
-                %{$role = $_.DisplayName; Get-MgDirectoryRoleMember -DirectoryRoleId $_.id | 
-                  where {$_.AdditionalProperties."@odata.type" -eq "#microsoft.graph.user"} | 
-                  % {Get-MgUser -userid $_.id }
+                ForEach-Object {$role = $_.DisplayName; Get-MgDirectoryRoleMember -DirectoryRoleId $_.id | 
+                  Where-Object {$_.AdditionalProperties."@odata.type" -eq "#microsoft.graph.user"} | 
+                  ForEach-Object {Get-MgUser -userid $_.id }
                 } | 
-                Select @{Name="Role"; Expression = {$role}}, DisplayName, UserPrincipalName, Mail, Id | Sort-Object -Property Mail -Unique
+                Select-Object @{Name="Role"; Expression = {$role}}, DisplayName, UserPrincipalName, Mail, Id | Sort-Object -Property Mail -Unique
     
     return $admins
   }
@@ -171,7 +171,7 @@ Function Get-Manager {
     [Parameter(Mandatory = $true)] $userId
   )
   process {
-    $manager = Get-MgUser -UserId $userId -ExpandProperty manager | Select @{Name = 'name'; Expression = {$_.Manager.AdditionalProperties.displayName}}
+    $manager = Get-MgUser -UserId $userId -ExpandProperty manager | Select-Object @{Name = 'name'; Expression = {$_.Manager.AdditionalProperties.displayName}}
     return $manager.name
   }
 }

@@ -84,7 +84,8 @@ Function ConnectTo-MgGraph {
 
   # Connect to Graph
   Write-Host "Connecting to Microsoft Graph" -ForegroundColor Cyan
-  Connect-MgGraph -Scopes "Reports.Read.All" -NoWelcome
+  Connect-MgGraph -Scopes "Reports.Read.All, AuditLog.Read.All" -NoWelcome
+  # https://community.spiceworks.com/topic/2491174-how-do-i-get-access-to-ms-graph-audit-log-readall-log
 }
 
 
